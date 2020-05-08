@@ -1,4 +1,12 @@
 .muskmap{
     width: 100%;
-    height: 100vh;
+    height: 94vh;
+    z-index: 1;
+}
+.muskmapNavbar{
+    font-family: 'Noto Sans TC', sans-serif;
+    z-index: 5;
+}
+.muskdatapopup{
+    font-family: 'Noto Sans TC', sans-serif;
 }

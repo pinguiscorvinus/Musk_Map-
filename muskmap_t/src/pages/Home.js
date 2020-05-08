@@ -12,7 +12,7 @@ export class Home extends Component {
       <>
       <div>
         <Datanavbar />
-        <div className="mapcontaner">
+        <div className="tmapcontaner">
           <Map />
         </div>
       </div>
