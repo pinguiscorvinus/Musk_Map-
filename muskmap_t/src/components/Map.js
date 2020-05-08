@@ -21,7 +21,7 @@ class Map extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.muskmapdatas !== prevProps.muskmapdatas) {
       const allmuskmapdate = this.props.muskmapdatas.features
-      console.log(allmuskmapdate)
+      // console.log(allmuskmapdate)
       //import map
       mymap = L.map('mapid').setView([25.033158, 121.564532], 15)
       const OSMUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'

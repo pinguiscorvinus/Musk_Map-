@@ -10,7 +10,7 @@ function App() {
     <Router>
       <>
         <Switch>
-          <Route path="/">
+          <Route path="/:Location">
             <Home />
           </Route>
         </Switch>
