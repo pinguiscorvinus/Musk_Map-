@@ -23,3 +23,13 @@ export const fetchMuskmapdata = () => {
       })
   }
 }
+// 取得地點選擇
+export const getcurrentcity = (city) => ({
+  type: 'SENT_LOCATIONDATA',
+  value: city,
+})
+export const passcurrentcity = (city) => {
+  return (dispatch) => {
+    dispatch(getcurrentcity(city))
+  }
+}

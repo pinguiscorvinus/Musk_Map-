@@ -15,17 +15,44 @@ import 'leaflet.markercluster'
 
 let mymap
 class Map extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      currentlocation: '',
+    }
+  }
   componentDidMount() {
     this.props.fetchMuskmapdata()
+    this.setState({
+      currentlocation: this.props.match.params.Location,
+    })
   }
   componentDidUpdate(prevProps) {
     if (this.props.muskmapdatas !== prevProps.muskmapdatas) {
       const allmuskmapdate = this.props.muskmapdatas.features
       // console.log(allmuskmapdate)
+      const selectedtcity = this.props.match.params.Location
+      this.setState({
+        currentlocation: this.props.match.params.Location,
+      })
+      console.log(this.state)
+      console.log(selectedtcity)
+      const citymuskmapdata = allmuskmapdate.filter(
+        (area) => area.properties.county === selectedtcity
+      )
+      // console.log(citymuskmapdata)
       //import map
-      mymap = L.map('mapid').setView([25.033158, 121.564532], 15)
+      mymap = L.map('mapid').setView([23.973828, 120.979676], 7)
       const OSMUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
       L.tileLayer(OSMUrl).addTo(mymap)
+      // 更新地圖位置
+      if (selectedtcity !== 'home') {
+        const cityLatitude = citymuskmapdata[0].geometry.coordinates[1]
+        const cityLongitude = citymuskmapdata[0].geometry.coordinates[0]
+        console.log(cityLatitude)
+        console.log(cityLongitude)
+        mymap.panTo([cityLatitude, cityLongitude])
+      }
       // import markerClusterGroup
       const markers = L.markerClusterGroup().addTo(mymap)
       // seticon

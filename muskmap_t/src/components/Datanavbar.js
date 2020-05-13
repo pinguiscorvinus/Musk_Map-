@@ -1,26 +1,32 @@
 import React from 'react'
 import { Link, withRouter } from 'react-router-dom'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import CityCountyData from '../jsondata/CityCountyData.json'
+import { passcurrentcity } from '../action/muskmapaction'
 //import sweetaler
 import Swal from 'sweetalert2'
 import 'sweetalert2/src/sweetalert2.scss'
 
 export class Datanavbar extends React.Component {
+  //redux sent data
+  selectcity = (city)=>{
+    let { dispatch } = this.props
+    dispatch(passcurrentcity(city))
+  }
+
+  // function selectcityareas() {
+  //     if (currentcity !== 'home') {
+  //       cityareas = CityCountyData.filter(
+  //         (area) => area.CityName === currentcity
+  //       )
+  //       console.log(cityareas)
+  //     } else {
+  //       Swal.fire('請先選擇縣市')
+  //       console.log('ERROR~~~~')
+  //     }
+  //   }
   render() {
-    // console.log(CityCountyData)
-    let currentcity = this.props.match.params.Location
-    function slectcityareas() {
-      if (currentcity !== 'home') {
-        let cityareas = CityCountyData.filter(
-          (area) => area.CityEngName === currentcity
-        )
-      } else {
-        Swal.fire('請先選擇縣市')
-        console.log('ERROR~~~~')
-      }
-    }
-    // console.log(cityareas)
-    // console.log(currentcity)
     return (
       <div>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark muskmapNavbar">
@@ -60,9 +66,10 @@ export class Datanavbar extends React.Component {
                   {CityCountyData.map((value, index) => {
                     return (
                       <Link
+                        role="button"
                         key={index}
                         className="dropdown-item"
-                        to={value.CityEngName}
+                        onClick={()=>{this.selectcity(value.CityName)}}
                       >
                         {value.CityName}
                       </Link>
@@ -71,17 +78,17 @@ export class Datanavbar extends React.Component {
                 </div>
               </li>
               <li className="nav-item dropdown">
-                <Link
+                <a
                   type="button"
                   className="nav-link dropdown-toggle"
                   data-toggle="dropdown"
                   role="button"
                   aria-haspopup="true"
                   aria-expanded="false"
-                  onClick={slectcityareas}
+                  onClick={this.selectcityareas}
                 >
                   選擇鄉鎮
-                </Link>
+                </a>
                 <div className="dropdown-menu selectcity">
                   {CityCountyData.map((value, index) => {
                     return (
@@ -103,5 +110,12 @@ export class Datanavbar extends React.Component {
     )
   }
 }
-
-export default withRouter(Datanavbar)
+// 取得Redux中store的值
+const mapStateToProps = (store) => {
+  return { passlocationdata: store.muskmapreducer.passlocationdata }
+}
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({ passcurrentcity }, dispatch)
+}
+// 指示dispatch要綁定哪些action creators
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(Datanavbar))

@@ -8,8 +8,21 @@ const muskmapdata = (state = [], action) => {
       return state
   }
 }
+// 取得所選縣市
+const passlocationdata = (state = [], action) => {
+  console.log(action)
+  switch (action.type) {
+    case 'SENT_LOCATIONDATA':
+      return Object.assign({}, action, {
+        currentcity: action.city,
+      })
+    default:
+      return state
+  }
+}
 //合併多個reducer(歸納函式)，為了配合瀏覽器開發外掛而必須的
 const muskmapreducer = combineReducers({
   muskmapdata,
+  passlocationdata,
 })
 export { muskmapreducer }
