@@ -15,64 +15,52 @@ import 'leaflet.markercluster'
 
 let mymap
 class Map extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      currentlocation: '',
-    }
-  }
   componentDidMount() {
     this.props.fetchMuskmapdata()
-    this.setState({
-      currentlocation: this.props.match.params.Location,
-    })
+    mymap = L.map('mapid').setView([23.973828, 120.979676], 7)
+    const OSMUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    L.tileLayer(OSMUrl).addTo(mymap)
   }
-  componentDidUpdate(prevProps) {
-    if (this.props.muskmapdatas !== prevProps.muskmapdatas) {
-      const allmuskmapdate = this.props.muskmapdatas.features
-      // console.log(allmuskmapdate)
-      const selectedtcity = this.props.match.params.Location
-      this.setState({
-        currentlocation: this.props.match.params.Location,
-      })
-      console.log(this.state)
-      console.log(selectedtcity)
-      const citymuskmapdata = allmuskmapdate.filter(
-        (area) => area.properties.county === selectedtcity
-      )
-      // console.log(citymuskmapdata)
-      //import map
-      mymap = L.map('mapid').setView([23.973828, 120.979676], 7)
-      const OSMUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-      L.tileLayer(OSMUrl).addTo(mymap)
-      // 更新地圖位置
-      if (selectedtcity !== 'home') {
-        const cityLatitude = citymuskmapdata[0].geometry.coordinates[1]
-        const cityLongitude = citymuskmapdata[0].geometry.coordinates[0]
-        console.log(cityLatitude)
-        console.log(cityLongitude)
-        mymap.panTo([cityLatitude, cityLongitude])
-      }
-      // import markerClusterGroup
-      const markers = L.markerClusterGroup().addTo(mymap)
-      // seticon
-      const blueIcon = new L.Icon({
-        iconUrl:
-          'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-        shadowUrl:
-          'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41],
-      })
-      // 取得座標資料
-      for (let i = 0; i < allmuskmapdate.length - 1; i++) {
-        let Latitude = allmuskmapdate[i].geometry.coordinates[1]
-        let Longitude = allmuskmapdate[i].geometry.coordinates[0]
-        markers.addLayer(
-          L.marker([Latitude, Longitude], { icon: blueIcon }).bindPopup(
-            `<div class="card muskdatapopup" style="width: 18rem;">
+  componentDidUpdate() {
+    let { features = [] } = this.props.muskmapdatas
+    let allmuskmapdate = features
+    // console.log(allmuskmapdate)
+    const selectedtcity = this.props.match.params.Location
+    console.log(this.props)
+    console.log(selectedtcity)
+    const citymuskmapdata = allmuskmapdate.filter(
+      (area) => area.properties.county === selectedtcity
+    )
+    // console.log(citymuskmapdata)
+    //import map
+    // 更新地圖位置
+    if (selectedtcity !== 'home') {
+      const cityLatitude = citymuskmapdata[0].geometry.coordinates[1]
+      const cityLongitude = citymuskmapdata[0].geometry.coordinates[0]
+      console.log(cityLatitude)
+      console.log(cityLongitude)
+      mymap.panTo([cityLatitude, cityLongitude])
+    }
+    // import markerClusterGroup
+    const markers = L.markerClusterGroup().addTo(mymap)
+    // seticon
+    const blueIcon = new L.Icon({
+      iconUrl:
+        'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+      shadowUrl:
+        'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+    })
+    // 取得座標資料
+    for (let i = 0; i < allmuskmapdate.length - 1; i++) {
+      let Latitude = allmuskmapdate[i].geometry.coordinates[1]
+      let Longitude = allmuskmapdate[i].geometry.coordinates[0]
+      markers.addLayer(
+        L.marker([Latitude, Longitude], { icon: blueIcon }).bindPopup(
+          `<div class="card muskdatapopup" style="width: 18rem;">
               <div class="card-body">
                 <h5 class="card-title">${allmuskmapdate[i].properties.name}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">${allmuskmapdate[i].properties.address}</h6>
@@ -90,9 +78,8 @@ class Map extends React.Component {
                 <p class="card-text">藥局備註：${allmuskmapdate[i].properties.note}</p>
               </div>
             </div>`
-          )
         )
-      }
+      )
     }
   }
   render() {
@@ -105,7 +92,10 @@ class Map extends React.Component {
 }
 // 取得Redux中store的值
 const mapStateToProps = (store) => {
-  return { muskmapdatas: store.muskmapreducer.muskmapdata }
+  return {
+    muskmapdatas: store.muskmapreducer.muskmapdata,
+    passlocationdata: store.muskmapreducer.passlocationdata,
+  }
 }
 
 // 指示dispatch要綁定哪些action creators

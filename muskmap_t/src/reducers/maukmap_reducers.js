@@ -1,4 +1,8 @@
 import { combineReducers } from 'redux'
+
+let initState = {
+  city:'Nation'
+}
 //取得口罩地圖資料
 const muskmapdata = (state = [], action) => {
   switch (action.type) {

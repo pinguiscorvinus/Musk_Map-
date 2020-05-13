@@ -11,8 +11,7 @@ import 'sweetalert2/src/sweetalert2.scss'
 export class Datanavbar extends React.Component {
   //redux sent data
   selectcity = (city)=>{
-    let { dispatch } = this.props
-    dispatch(passcurrentcity(city))
+    this.props.passcurrentcity(city)
   }
 
   // function selectcityareas() {
@@ -27,6 +26,7 @@ export class Datanavbar extends React.Component {
   //     }
   //   }
   render() {
+    console.log(this.props)
     return (
       <div>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark muskmapNavbar">
@@ -115,7 +115,8 @@ const mapStateToProps = (store) => {
   return { passlocationdata: store.muskmapreducer.passlocationdata }
 }
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ passcurrentcity }, dispatch)
+  return bindActionCreators({ passcurrentcity,passcurrentcity }, dispatch)
+         
 }
 // 指示dispatch要綁定哪些action creators
 export default withRouter(connect(mapStateToProps,mapDispatchToProps)(Datanavbar))
