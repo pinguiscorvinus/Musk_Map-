@@ -1,14 +1,13 @@
 import React from 'react'
 
 import { withRouter } from 'react-router-dom'
-
+// 引入Redux相關
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-
 import { fetchMuskmapdata } from '../action/muskmapaction'
 import 'leaflet/dist/leaflet.css'
+// 引入地圖
 import L from 'leaflet'
-
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import 'leaflet.markercluster'
@@ -17,7 +16,8 @@ let mymap
 class Map extends React.Component {
   componentDidMount() {
     this.props.fetchMuskmapdata()
-    mymap = L.map('mapid').setView([23.973828, 120.979676], 7)
+    //import map
+    mymap = L.map('mapid').setView([25.039969, 121.512548], 12)
     const OSMUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     L.tileLayer(OSMUrl).addTo(mymap)
   }
@@ -25,20 +25,14 @@ class Map extends React.Component {
     let { features = [] } = this.props.muskmapdatas
     let allmuskmapdate = features
     // console.log(allmuskmapdate)
-    const selectedtcity = this.props.match.params.Location
-    console.log(this.props)
-    console.log(selectedtcity)
+    const selectedtcity = this.props.passlocationdata.currentcity
     const citymuskmapdata = allmuskmapdate.filter(
       (area) => area.properties.county === selectedtcity
     )
-    // console.log(citymuskmapdata)
-    //import map
     // 更新地圖位置
-    if (selectedtcity !== 'home') {
+    if (selectedtcity !== 'Nation') {
       const cityLatitude = citymuskmapdata[0].geometry.coordinates[1]
       const cityLongitude = citymuskmapdata[0].geometry.coordinates[0]
-      console.log(cityLatitude)
-      console.log(cityLongitude)
       mymap.panTo([cityLatitude, cityLongitude])
     }
     // import markerClusterGroup

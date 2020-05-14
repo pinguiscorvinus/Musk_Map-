@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 
 let initState = {
-  city:'Nation'
+  currentcity: 'Nation',
 }
 //取得口罩地圖資料
 const muskmapdata = (state = [], action) => {
@@ -13,12 +13,11 @@ const muskmapdata = (state = [], action) => {
   }
 }
 // 取得所選縣市
-const passlocationdata = (state = [], action) => {
-  console.log(action)
+const passlocationdata = (state = initState, action) => {
   switch (action.type) {
     case 'SENT_LOCATIONDATA':
-      return Object.assign({}, action, {
-        currentcity: action.city,
+      return Object.assign({}, state, {
+        currentcity: action.currentcity,
       })
     default:
       return state
