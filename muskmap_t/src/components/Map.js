@@ -1,12 +1,10 @@
 import React from 'react'
-
-import { withRouter } from 'react-router-dom'
 // 引入Redux相關
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchMuskmapdata } from '../action/muskmapaction'
+// 引入地圖圖資
 import 'leaflet/dist/leaflet.css'
-// 引入地圖
 import L from 'leaflet'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
@@ -27,22 +25,25 @@ class Map extends React.Component {
     // console.log(allmuskmapdate)
     const selectedtcity = this.props.passlocationdata.currentcity
     const selectedarea = this.props.passlocationareadata.currentarea
-    const citymuskmapdata = allmuskmapdate.filter(
-      (area) => area.properties.county === selectedtcity
-    )
-    const cityareamuskmapdata = citymuskmapdata.filter(
-      (area) => area.properties.town === selectedarea
-    )
     // 更新地圖位置
     if (selectedtcity !== 'Nation') {
-      const cityLatitude = citymuskmapdata[0].geometry.coordinates[1]
-      const cityLongitude = citymuskmapdata[0].geometry.coordinates[0]
+      const citymuskmapdata = allmuskmapdate.filter(
+        (area) => area.properties.county === selectedtcity
+      )
       if (selectedarea !== 'Unset') {
+        const cityareamuskmapdata = citymuskmapdata.filter(
+          (area) => area.properties.town === selectedarea
+        )
         const cityareaLatitude = cityareamuskmapdata[0].geometry.coordinates[1]
         const cityareaLongitude = cityareamuskmapdata[0].geometry.coordinates[0]
-        mymap.panTo([cityareaLatitude, cityareaLongitude])
+        mymap.flyTo([cityareaLatitude, cityareaLongitude], 15, {
+          animate: false,
+        })
+        // mymap.zoomIn(2)
       } else {
-        mymap.panTo([cityLatitude, cityLongitude])
+        const cityLatitude = citymuskmapdata[0].geometry.coordinates[1]
+        const cityLongitude = citymuskmapdata[0].geometry.coordinates[0]
+        mymap.flyTo([cityLatitude, cityLongitude], 12, { animate: false })
       }
     }
     // import markerClusterGroup
@@ -108,4 +109,4 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({ fetchMuskmapdata }, dispatch)
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Map))
+export default connect(mapStateToProps, mapDispatchToProps)(Map)

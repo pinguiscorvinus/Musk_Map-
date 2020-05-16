@@ -1,5 +1,4 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import CityCountyData from '../jsondata/CityCountyData.json'
@@ -50,9 +49,6 @@ export class Datanavbar extends React.Component {
                 title="選擇縣市"
                 id="basic-nav-dropdown"
                 className="nav-items"
-                onClick={() => {
-                  this.selectarea('Unset')
-                }}
               >
                 <div className="selectcity">
                   {CityCountyData.map((value, index) => {
@@ -63,6 +59,7 @@ export class Datanavbar extends React.Component {
                         className="dropdown-item"
                         onClick={() => {
                           this.selectcity(value.CityName)
+                          this.selectarea('Unset')
                         }}
                       >
                         {value.CityName}
@@ -111,6 +108,4 @@ const mapStateToProps = (store) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({ passcurrentcity, passcurrentarea }, dispatch)
 }
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(Datanavbar)
-)
+export default connect(mapStateToProps, mapDispatchToProps)(Datanavbar)
