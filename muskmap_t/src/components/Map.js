@@ -22,18 +22,28 @@ class Map extends React.Component {
     L.tileLayer(OSMUrl).addTo(mymap)
   }
   componentDidUpdate() {
-    let { features = [] } = this.props.muskmapdatas
-    let allmuskmapdate = features
+    const { features = [] } = this.props.muskmapdatas
+    const allmuskmapdate = features
     // console.log(allmuskmapdate)
     const selectedtcity = this.props.passlocationdata.currentcity
+    const selectedarea = this.props.passlocationareadata.currentarea
     const citymuskmapdata = allmuskmapdate.filter(
       (area) => area.properties.county === selectedtcity
+    )
+    const cityareamuskmapdata = citymuskmapdata.filter(
+      (area) => area.properties.town === selectedarea
     )
     // 更新地圖位置
     if (selectedtcity !== 'Nation') {
       const cityLatitude = citymuskmapdata[0].geometry.coordinates[1]
       const cityLongitude = citymuskmapdata[0].geometry.coordinates[0]
-      mymap.panTo([cityLatitude, cityLongitude])
+      if (selectedarea !== 'Unset') {
+        const cityareaLatitude = cityareamuskmapdata[0].geometry.coordinates[1]
+        const cityareaLongitude = cityareamuskmapdata[0].geometry.coordinates[0]
+        mymap.panTo([cityareaLatitude, cityareaLongitude])
+      } else {
+        mymap.panTo([cityLatitude, cityLongitude])
+      }
     }
     // import markerClusterGroup
     const markers = L.markerClusterGroup().addTo(mymap)
@@ -89,6 +99,7 @@ const mapStateToProps = (store) => {
   return {
     muskmapdatas: store.muskmapreducer.muskmapdata,
     passlocationdata: store.muskmapreducer.passlocationdata,
+    passlocationareadata: store.muskmapreducer.passlocationareadata,
   }
 }
 

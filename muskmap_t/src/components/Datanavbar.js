@@ -1,69 +1,63 @@
 import React from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import CityCountyData from '../jsondata/CityCountyData.json'
-import { passcurrentcity } from '../action/muskmapaction'
+import { passcurrentcity, passcurrentarea } from '../action/muskmapaction'
+import { Navbar, NavDropdown, Nav } from 'react-bootstrap'
 //import sweetaler
 import Swal from 'sweetalert2'
 import 'sweetalert2/src/sweetalert2.scss'
 
 export class Datanavbar extends React.Component {
-  currentcitysarea = []
-  selectedcity = this.props.passlocationdata.currentcity
-  currentcitysareas = () => {
-    if (this.selectedcity !== 'Nation') {
-      this.currentcitysarea = CityCountyData.filter(
-        (area) => area.CityName === this.selectedcity
-      )
-    } else {
-      Swal.fire('請先選擇縣市')
+  constructor(props) {
+    super(props)
+    this.state = {
+      currentcitysarealist: [],
     }
   }
   //redux sent data
   selectcity = (city) => {
     this.props.passcurrentcity(city)
   }
+  selectarea = (area) => {
+    this.props.passcurrentarea(area)
+  }
   render() {
+    let currentcitysarea = []
+    let selectedcity = this.props.passlocationdata.currentcity
+    let currentcitysareas = () => {
+      if (selectedcity !== 'Nation') {
+        currentcitysarea = CityCountyData.filter(
+          (area) => area.CityName === selectedcity
+        )
+        this.setState((prevState, props) => ({
+          currentcitysarealist: currentcitysarea[0].AreaList,
+        }))
+      } else {
+        Swal.fire('請先選擇縣市')
+      }
+    }
     return (
       <div>
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark muskmapNavbar">
-          <Link className="navbar-brand" to="/home">
-            試作口罩地圖
-          </Link>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav">
-              <li className="nav-item">
-                <Link className="nav-link" to="/home">
-                  全國口罩地圖
-                </Link>
-              </li>
-              <li className="nav-item dropdown">
-                <Link
-                  className="nav-link dropdown-toggle"
-                  data-toggle="dropdown"
-                  to="#"
-                  role="button"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  選擇縣市
-                </Link>
-                <div className="dropdown-menu selectcity">
+        <Navbar bg="dark" variant="dark" className="muskmapNavbar">
+          <Navbar.Brand>試作口罩地圖</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link className="nav-items">全國口罩地圖</Nav.Link>
+              <NavDropdown
+                title="選擇縣市"
+                id="basic-nav-dropdown"
+                className="nav-items"
+                onClick={() => {
+                  this.selectarea('Unset')
+                }}
+              >
+                <div className="selectcity">
                   {CityCountyData.map((value, index) => {
                     return (
-                      <Link
+                      <NavDropdown.Item
                         role="button"
                         key={index}
                         className="dropdown-item"
@@ -72,37 +66,39 @@ export class Datanavbar extends React.Component {
                         }}
                       >
                         {value.CityName}
-                      </Link>
+                      </NavDropdown.Item>
                     )
                   })}
                 </div>
-              </li>
-              <li className="nav-item dropdown">
-                <a
-                  type="button"
-                  className="nav-link dropdown-toggle"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                  onClick={() => {
-                    this.currentcitysareas()
-                  }}
-                >
-                  選擇鄉鎮
-                </a>
-                <div className="dropdown-menu selectcity">
-                  {CityCountyData.map((value, index) => {
+              </NavDropdown>
+              <NavDropdown
+                title="選擇鄉鎮"
+                id="basic-nav-dropdown"
+                className="nav-items"
+                onClick={() => {
+                  currentcitysareas()
+                }}
+              >
+                <div className="selectcity">
+                  {this.state.currentcitysarealist.map((value, index) => {
                     return (
-                      <Link key={index} className="dropdown-item">
-                        {value.CityName}
-                      </Link>
+                      <NavDropdown.Item
+                        role="button"
+                        key={index}
+                        className="dropdown-item"
+                        onClick={() => {
+                          this.selectarea(value.AreaName)
+                        }}
+                      >
+                        {value.AreaName}
+                      </NavDropdown.Item>
                     )
                   })}
                 </div>
-              </li>
-            </ul>
-          </div>
-        </nav>
+              </NavDropdown>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
       </div>
     )
   }
@@ -111,10 +107,10 @@ export class Datanavbar extends React.Component {
 const mapStateToProps = (store) => {
   return { passlocationdata: store.muskmapreducer.passlocationdata }
 }
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ passcurrentcity, passcurrentcity }, dispatch)
-}
 // 指示dispatch要綁定哪些action creators
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({ passcurrentcity, passcurrentarea }, dispatch)
+}
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps)(Datanavbar)
 )

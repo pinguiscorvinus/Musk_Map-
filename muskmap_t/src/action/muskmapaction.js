@@ -1,4 +1,4 @@
-//引入axios接收
+//引入axios
 import axios from 'axios'
 
 // 取得口罩地圖資料
@@ -31,5 +31,15 @@ export const getcurrentcity = (city) => ({
 export const passcurrentcity = (city) => {
   return (dispatch) => {
     dispatch(getcurrentcity(city))
+  }
+}
+// 取得鄉鎮市區
+export const getcurrentarea = (area) => ({
+  type: 'SENT_LOCATIONAREADATA',
+  currentarea: area,
+})
+export const passcurrentarea = (area) => {
+  return (dispatch) => {
+    dispatch(getcurrentarea(area))
   }
 }
