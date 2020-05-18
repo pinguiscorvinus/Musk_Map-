@@ -39,7 +39,7 @@ export class Datanavbar extends React.Component {
     }
     return (
       <div>
-        <Navbar bg="dark" variant="dark" className="muskmapNavbar">
+        <Navbar bg="dark" variant="dark" expand="lg" className="muskmapNavbar">
           <Navbar.Brand>試作口罩地圖</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
