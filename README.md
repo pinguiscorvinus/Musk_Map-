@@ -10,8 +10,8 @@ https://pinguiscorvinus.github.io/Musk_Map-React/
 
 ## 使用技術
 
-1.react.js
-2.leaflet & openstreetmap
-3.redux
-4.react-bootstrap
-5.markerClusterGroup
+* 1.react.js
+* 2.leaflet & openstreetmap
+* 3.redux
+* 4.react-bootstrap
+* 5.markerClusterGroup
